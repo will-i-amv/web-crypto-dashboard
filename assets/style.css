@@ -1,0 +1,237 @@
+
+body {
+    background-color: #111111;
+    color: #7FDBFF;
+    font-family: Calibri;
+}
+
+.main-header {
+    text-align: center;
+    margin: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+
+.main-options{
+    display: table;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 50px 0px;
+    padding: 20px 0;
+}
+
+.main-options .select-data{
+    min-width: 100px;
+    display: table-cell;
+    height: auto;
+}
+
+.main-options .small-width{
+    width: 150px;
+}
+
+.main-options .higher-width,
+.graph-container .higher-width
+{
+    width: 300px;
+}
+
+.main-options .select-data label,
+.graph-container .select-data label
+{
+    display: block;
+    padding-bottom: 10px;
+    font-size: 1.05rem;
+}
+
+.main-options .select-data #base-currency div,
+.main-options .select-data #crypto-dropdown div,
+.graph-container .select-data #fng-checklist div,
+.main-options .select-data #rsi-checklist div,
+.main-options .select-data #ma-period div,
+.main-options .select-data #ma-window div{
+    color: #007eff;
+    background-color: #111111; 
+}
+
+.main-options .select-data .Select.has-value.Select--single > .Select-control .Select-value .Select-value-label,
+.graph-container .select-data .Select.has-value.Select--single > .Select-control .Select-value .Select-value-label{
+    color: #007eff;
+}
+
+.main-options .select-data #start-date-picker input,
+.main-options .select-data #end-date-picker input{
+    background-color: #111111;
+    color: #007eff;
+    border: none;
+    font-size: 15px;
+}
+
+.graph-container{
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+.main-fng-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 50px 0px;
+    padding: 20px 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.main-fng-box .fng-part-data {
+    max-width: 300px;
+}
+
+.collaps-button-area {
+    background-color: rgb(30, 30, 30) !important;
+    color: white;
+    font-size: 14px;
+}
+
+
+.graph-container .select-data{
+    min-width: 100px;
+    display: block;
+    height: auto;
+    margin: auto;
+    text-align: center;
+}
+
+.tabs-menu {
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.LED-display-container {
+    max-width: 60%;
+    margin: 20px auto;
+}
+
+
+@media (max-width: 870px){
+
+    .main-options .select-data,
+    .graph-container .select-data
+    {
+        display: block;
+        margin: 0 auto;
+        margin-bottom: 20px;
+    }
+
+    .main-options .select-data,
+    .graph-container .select-data 
+    {
+        min-width: 300px;
+    }
+
+    .main-options .select-data #base-currency,
+    .graph-container .select-data #fng-checklist,
+    .main-options .select-data #rsi-checklist,
+    .main-options .select-data #ma-period div,
+    .main-options .select-data #ma-window div
+    {
+        min-width: 80px;
+    }
+
+    .main-fng-box {
+        flex-direction: column;
+        margin: auto;
+        border-spacing: 0;
+        padding: 0;
+        margin-bottom: 0;
+        padding-bottom: 50px;
+    }
+
+    .main-fng-box .fng-part-data {
+        margin: auto;
+    }
+
+    .main-fng-box .fng-part-data #fear_greed_index{
+        margin-top: 50px;
+    }
+
+
+    .tabs-menu {
+        max-width: 100%;
+    }
+
+    .tab-box {
+        max-width: 80%;
+        margin: auto;
+    }
+
+    .LED-display-container {
+        max-width: 20%;
+        margin: auto;
+    }
+}
+
+
+
+
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    margin-top: 50px;
+}
+
+
+.main-table-options{
+    display: flex;
+    flex-direction: column;
+    justify-content: center !important;
+    max-width: 1100px;
+    margin: auto !important;
+    border-collapse: separate;
+    border-spacing: 50px 0px;
+
+}
+
+.main-table-options #crypto-table{
+    padding-bottom: 40px;
+}
+
+.main-table-options #crypto-table table{
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+.main-table-options #table-header {
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+}
+
+
+img[src*="#thumbnail"] {
+    width:30px;
+ }
+
+@media (max-width: 900px){
+    .main-table-options #crypto-table{
+        overflow-x: scroll;
+        max-width: 90%;
+        margin: auto;
+    }
+
+    .main-table-options #table-header {
+        max-width: 90%;
+    }
+}
+
+
+
+
