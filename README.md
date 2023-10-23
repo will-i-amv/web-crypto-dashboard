@@ -42,16 +42,20 @@ All of them can be filtered by indicator type and time period.
 
 ## Setup
 
-* Clone repository
+* Clone this repository
+
+```
+https://github.com/will-i-amv/web-crypto-dashboard/
+```
 
 * Create and activate a new virtual environment
 
 ```
-python3 -m venv YOUR_ENV_NAME
-souce ./YOUR_ENV_NAME/bin/activate
+python -m venv env
+source env/bin/activate
 ```
 
-* Rename .env.example to `.env` and set your value (get free API key from polygon.io)
+* Rename .env.example to `.env` and save API there
 
 ```
 POLYGON_API_KEY=<your_polygon_api_key>
