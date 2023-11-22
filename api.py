@@ -14,8 +14,23 @@ POLYGON_API_KEY = os.environ.get('POLYGON_API_KEY')
 
 
 def get_exchange_rates():
-    rates = CurrencyRates().get_rates(base_cur='USD')
-    df = pd.DataFrame([rates]).assign(USD=1.0)
+    url = 'https://api.coincap.io/v2/rates'
+    try:
+        response = requests.get(url)
+        response_data = response.json()["data"]
+    except:
+        response_data = [{
+            'id': '',
+            'symbol': '',
+            'currencySymbol': '',
+            'type': '',
+            'rateUsd': ''
+        }]
+    df = (
+        pd
+        .DataFrame(response_data)
+        .astype({'symbol': 'str', 'rateUsd': 'float64'})
+    )
     return df
 
 

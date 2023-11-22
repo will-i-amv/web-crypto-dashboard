@@ -63,13 +63,20 @@ def clean_exchange_rates(date, currency_names):
     df = models.get_exchange_rates(date)
     if df.empty:
         df = api.get_exchange_rates()
-        record = (
-            df
-            .loc[:, currency_names]
-            .assign(date=date)
-            .to_dict('records')[0]
-        )
-        models.save_exchange_rates(record)
+        if not df.empty:
+            record = (
+                df
+                .astype({'symbol': 'str', 'rateUsd': 'float64'})
+                .loc[lambda x: (x['type'] == 'fiat') & (x['symbol'].isin(currency_names))]
+                .loc[:, ['symbol', 'rateUsd']]
+                .assign(rateUsd=lambda x: 1 / x['rateUsd'])
+                .round({'rateUsd': 4})
+                .set_index('symbol')
+                .T
+                .assign(date=date)
+                .to_dict('records')[0]
+            )
+            models.save_exchange_rates(record)
     rates = df.loc[:, currency_names].to_dict('records')[0]
     return rates
 
