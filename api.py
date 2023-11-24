@@ -5,7 +5,6 @@ from pathlib import Path
 import pandas as pd
 import requests
 from dotenv import load_dotenv
-from forex_python.converter import CurrencyRates
 
 
 env_file = Path(__file__).resolve().parent / '.env'
