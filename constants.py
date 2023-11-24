@@ -3,7 +3,7 @@ from datetime import datetime
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 CURRENCY_SYMBOLS = {
-    'USD': '$', 
+    'USD': '$',
     'PLN': 'zł',
     'EUR': '€',
     'GBP': '£',

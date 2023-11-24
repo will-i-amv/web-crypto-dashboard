@@ -38,7 +38,7 @@ def clean_ma_data(ma_windows, ma_types):
             .sort_values(by=['timestamp'])
         )
     df_ma50 = dfs_by_window['50']
-    start_datetime = df_ma50["timestamp"].min() 
+    start_datetime = df_ma50["timestamp"].min()
     end_datetime = df_ma50["timestamp"].max()
     if (start_datetime is np.nan) and (end_datetime is np.nan):
         return tuple(dfs_by_window.values())

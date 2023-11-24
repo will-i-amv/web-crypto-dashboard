@@ -63,10 +63,18 @@ def get_assets():
 
 
 def get_asset_history(start, end, currency, interval='d1'):
-    unix_start = start.replace(tzinfo=dt.timezone.utc).timestamp() * 1000 # In miliseconds
-    unix_end = end.replace(tzinfo=dt.timezone.utc).timestamp() * 1000 # In miliseconds
+    unix_start = (
+        start
+        .replace(tzinfo=dt.timezone.utc)
+        .timestamp() * 1000
+    )  # In miliseconds
+    unix_end = (
+        end
+        .replace(tzinfo=dt.timezone.utc)
+        .timestamp() * 1000
+    )  # In miliseconds
     url = (
-        f"http://api.coincap.io/v2/assets/{currency}/history?" + 
+        f"http://api.coincap.io/v2/assets/{currency}/history?" +
         f"interval={interval}&start={unix_start}&end={unix_end}"
     )
     try:
@@ -107,8 +115,8 @@ def get_fear_greed_data():
 
 def get_rsi_data():
     url = (
-        f'https://api.polygon.io/v1/indicators/rsi/X:BTCUSD' + 
-        f'?timespan=hour&window=14&series_type=close&expand_underlying=false' + 
+        f'https://api.polygon.io/v1/indicators/rsi/X:BTCUSD' +
+        f'?timespan=hour&window=14&series_type=close&expand_underlying=false' +
         f'&order=desc&limit=700&apiKey={POLYGON_API_KEY}'
     )
     try:

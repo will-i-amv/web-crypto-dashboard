@@ -19,8 +19,8 @@ app.config.suppress_callback_exceptions = True
 DF_CRYPTO_ASSETS = get_assets()
 CRYPTO_ASSET_NAMES = DF_CRYPTO_ASSETS.loc[:, 'id'].to_list()
 FIAT_CURRENCY_RATES = clean_exchange_rates(
-    date=dt.date.today(), 
-    currency_names=['USD', 'EUR', 'GBP', 'PLN', 'CHF']
+    date=dt.date.today(),
+    currency_names=['USD', 'EUR', 'GBP', 'PLN', 'CHF'],
 )
 
 ##### Main crypto graph section #####
@@ -85,7 +85,7 @@ def display_main_crypto_series(crypto_dropdown, base_currency, start_date, end_d
 def display_exchange_rates(base_currency):
     fiat_curr_rate = FIAT_CURRENCY_RATES[base_currency]
     updated_rates = {
-        label: round((value / fiat_curr_rate), 2) 
+        label: round((value / fiat_curr_rate), 2)
         for label, value in FIAT_CURRENCY_RATES.items()
     }
     usd_rate = updated_rates['USD']
@@ -154,13 +154,13 @@ def display_ranking_table_body(base_currency):
     for col_name in df_cleaned.columns.to_list():
         if col_name == 'Logo':
             columns.append({
-                'id': col_name, 
+                'id': col_name,
                 'name': col_name,
                 'presentation': 'markdown',
             })
         else:
             columns.append({
-                'id': col_name, 
+                'id': col_name,
                 'name': col_name,
             })
     return (columns, data)
@@ -168,6 +168,7 @@ def display_ranking_table_body(base_currency):
 
 ##### Fear and greed index section #####
 df_fng = get_fear_greed_data()
+
 
 @app.callback(
     Output("fng-collapse", "is_open"),
@@ -259,8 +260,8 @@ def rsi_toggle_collapse(n, is_open):
 
 ###### MA-50 and Ma-200 indicator section #######
 df_ma50, df_ma200 = clean_ma_data(
-    ma_windows=['50', '180'], 
-    ma_types=['sma', 'ema']
+    ma_windows=['50', '180'],
+    ma_types=['sma', 'ema'],
 )
 
 
