@@ -1,11 +1,12 @@
 import dash_daq as daq
 import dash_bootstrap_components as dbc
+import pandas as pd
 from dash import html, dcc, dash_table
 
 from utils import resample_df_fng
 
 
-def render_fng_table(df_fng):
+def render_fng_table(df_fng: pd.DataFrame) -> html.Section:
     df_fng_sampled = resample_df_fng(df_fng)
     fng_gauge_table = (
         html.Section(

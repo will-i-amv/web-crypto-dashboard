@@ -1,10 +1,12 @@
 import datetime as dt
 from dateutil import parser
+from typing import Any, Dict, List, Tuple
 
 import dash
 import dash_bootstrap_components as dbc
 import plotly.express as px
 from dash import Input, Output, State
+from plotly.graph_objects import Figure
 
 from api import get_assets, get_fear_greed_data, get_rsi_data
 from constants import CURRENCY_SYMBOLS, COLORS
@@ -12,6 +14,7 @@ from layout.main_layout import render_layout
 from utils import clean_price_data, clean_ma_data, clean_exchange_rates
 
 
+ListOfDicts = List[Dict[str, Any]]
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.config.suppress_callback_exceptions = True
 
@@ -40,7 +43,12 @@ DF_MAIN_GRAPH = clean_price_data(
         Input('end-date-picker', 'date')
     ]
 )
-def display_main_crypto_series(crypto_dropdown, base_currency, start_date, end_date):
+def display_main_crypto_series(
+    crypto_dropdown: str, 
+    base_currency: str, 
+    start_date: str, 
+    end_date: str
+) -> Figure:
     start_time = parser.isoparse(start_date)
     end_time = parser.isoparse(end_date)
     fiat_curr_rate = FIAT_CURRENCY_RATES[base_currency]
@@ -82,7 +90,7 @@ def display_main_crypto_series(crypto_dropdown, base_currency, start_date, end_d
     ],
     [Input('base-currency', 'value')]
 )
-def display_exchange_rates(base_currency):
+def display_exchange_rates(base_currency: str) -> Tuple[Any]:
     fiat_curr_rate = FIAT_CURRENCY_RATES[base_currency]
     updated_rates = {
         label: round((value / fiat_curr_rate), 2)
@@ -103,7 +111,7 @@ def display_exchange_rates(base_currency):
     Output('table-header', 'children'),
     [Input('base-currency', 'value')]
 )
-def display_ranking_table_header(base_currency):
+def display_ranking_table_header(base_currency: str) -> str:
     return f'Ranking of 10 ten most popular cryptocurrencies in {base_currency}:'
 
 
@@ -114,7 +122,7 @@ def display_ranking_table_header(base_currency):
     ],
     [Input('base-currency', 'value')]
 )
-def display_ranking_table_body(base_currency):
+def display_ranking_table_body(base_currency: str) -> Tuple[ListOfDicts]:
     curr_symbol = CURRENCY_SYMBOLS[base_currency]
     fiat_curr_rate = FIAT_CURRENCY_RATES[base_currency]
     df_cleaned = (
@@ -185,7 +193,7 @@ def fng_toggle_collapse(n, is_open):
     Output("fng-line-graph", "figure"),
     Input("fng-checklist", "value")
 )
-def display_fng_series(time_range):
+def display_fng_series(time_range: str) -> Figure:
     if time_range == "Last Week":
         df_cut = df_fng[:6]
     elif time_range == "Last Month":
@@ -218,7 +226,7 @@ df_rsi = get_rsi_data()
     Output("rsi-line-graph", "figure"),
     Input("rsi-checklist", "value")
 )
-def display_rsi_series(time_range):
+def display_rsi_series(time_range: str) -> Figure:
     if time_range == "Last Day":
         df_cut = df_rsi[:25]
     elif time_range == "Last Week":
@@ -273,7 +281,7 @@ df_ma50, df_ma200 = clean_ma_data(
         Input('ma-period', 'value')
     ]
 )
-def display_ma_series(types, window, period):
+def display_ma_series(types: str, window: str, period: str) -> Figure:
     if window == "50 days":
         df_ma = df_ma50
     else:

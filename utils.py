@@ -1,5 +1,6 @@
 import datetime as dt
 import functools as ft
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd
@@ -8,7 +9,11 @@ import api
 import models
 
 
-def clean_price_data(start, end, currencies):
+def clean_price_data(
+    start: dt.datetime,
+    end: dt.datetime,
+    currencies: List[str]
+) -> pd.DataFrame:
     list_of_dfs = []
     for currency in currencies:
         df = api.get_asset_history(start, end, currency)
@@ -25,7 +30,7 @@ def clean_price_data(start, end, currencies):
     return df_main_graph
 
 
-def clean_ma_data(ma_windows, ma_types):
+def clean_ma_data(ma_windows: List[str], ma_types: List[str]) -> pd.DataFrame:
     dfs_by_window = {}
     for ma_window in ma_windows:
         dfs_by_type = {}
@@ -59,7 +64,7 @@ def clean_ma_data(ma_windows, ma_types):
         return tuple(dfs_by_window_cleaned.values())
 
 
-def clean_exchange_rates(date, currency_names):
+def clean_exchange_rates(date: dt.date, currency_names: List[str]) -> Dict[str, float]:
     df = models.get_exchange_rates(date)
     if df.empty:
         df = api.get_exchange_rates()
@@ -81,7 +86,7 @@ def clean_exchange_rates(date, currency_names):
     return rates
 
 
-def resample_df_fng(df):
+def resample_df_fng(df: pd.DataFrame) -> pd.DataFrame:
     today = df['timestamp'].max()
     selected_dates = [
         today - dt.timedelta(days=day)

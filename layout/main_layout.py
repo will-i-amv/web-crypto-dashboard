@@ -1,12 +1,13 @@
 import datetime as dt
+from typing import List
 
+import pandas as pd
 from dash import html, dcc
-
 from constants import CURRENCY_SYMBOLS, TODAY
 from layout.tab_sections import ranking, fng, ma, rsi 
 
 
-def render_layout(asset_names, df_fng):
+def render_layout(asset_names: List[str], df_fng: pd.DataFrame) -> html.Div:
     title = (
         html.H1(
             children="Dash application for cryptocurrencies monitoring",
