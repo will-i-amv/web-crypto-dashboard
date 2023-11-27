@@ -1,7 +1,7 @@
-from datetime import datetime
+import datetime as dt
 
 
-TODAY = datetime.today().strftime('%Y-%m-%d')
+TODAY = dt.datetime.today().strftime('%Y-%m-%d')
 CURRENCY_SYMBOLS = {
     'USD': '$',
     'PLN': 'zł',

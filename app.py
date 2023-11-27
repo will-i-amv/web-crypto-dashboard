@@ -44,9 +44,9 @@ DF_MAIN_GRAPH = clean_price_data(
     ]
 )
 def display_main_crypto_series(
-    crypto_dropdown: str, 
-    base_currency: str, 
-    start_date: str, 
+    crypto_dropdown: str,
+    base_currency: str,
+    start_date: str,
     end_date: str
 ) -> Figure:
     start_time = parser.isoparse(start_date)
