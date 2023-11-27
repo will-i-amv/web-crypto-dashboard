@@ -5,7 +5,6 @@ from pathlib import Path
 import pandas as pd
 import requests
 from dotenv import load_dotenv
-from forex_python.converter import CurrencyRates
 
 
 env_file = Path(__file__).resolve().parent / '.env'
@@ -13,13 +12,28 @@ load_dotenv(env_file)
 POLYGON_API_KEY = os.environ.get('POLYGON_API_KEY')
 
 
-def get_exchange_rates():
-    rates = CurrencyRates().get_rates(base_cur='USD')
-    df = pd.DataFrame([rates]).assign(USD=1.0)
+def get_exchange_rates() -> pd.DataFrame:
+    url = 'https://api.coincap.io/v2/rates'
+    try:
+        response = requests.get(url)
+        response_data = response.json()["data"]
+    except:
+        response_data = [{
+            'id': '',
+            'symbol': '',
+            'currencySymbol': '',
+            'type': '',
+            'rateUsd': ''
+        }]
+    df = (
+        pd
+        .DataFrame(response_data)
+        .astype({'symbol': 'str', 'rateUsd': 'float64'})
+    )
     return df
 
 
-def get_assets():
+def get_assets() -> pd.DataFrame:
     url = 'http://api.coincap.io/v2/assets?limit=10'
     try:
         response = requests.get(url)
@@ -47,11 +61,24 @@ def get_assets():
     return df
 
 
-def get_asset_history(start, end, currency, interval='d1'):
-    unix_start = start.replace(tzinfo=dt.timezone.utc).timestamp() * 1000 # In miliseconds
-    unix_end = end.replace(tzinfo=dt.timezone.utc).timestamp() * 1000 # In miliseconds
+def get_asset_history(
+    start: dt.datetime, 
+    end: dt.datetime, 
+    currency: str, 
+    interval: str = 'd1'
+) ->  pd.DataFrame:
+    unix_start = (
+        start
+        .replace(tzinfo=dt.timezone.utc)
+        .timestamp() * 1000
+    )  # In miliseconds
+    unix_end = (
+        end
+        .replace(tzinfo=dt.timezone.utc)
+        .timestamp() * 1000
+    )  # In miliseconds
     url = (
-        f"http://api.coincap.io/v2/assets/{currency}/history?" + 
+        f"http://api.coincap.io/v2/assets/{currency}/history?" +
         f"interval={interval}&start={unix_start}&end={unix_end}"
     )
     try:
@@ -69,7 +96,7 @@ def get_asset_history(start, end, currency, interval='d1'):
     return df_cleaned
 
 
-def get_fear_greed_data():
+def get_fear_greed_data() -> pd.DataFrame:
     url = 'https://api.alternative.me/fng/?limit=365&date_format=us'
     try:
         response = requests.get(url)
@@ -90,10 +117,10 @@ def get_fear_greed_data():
     return df_clean
 
 
-def get_rsi_data():
+def get_rsi_data() -> pd.DataFrame:
     url = (
-        f'https://api.polygon.io/v1/indicators/rsi/X:BTCUSD' + 
-        f'?timespan=hour&window=14&series_type=close&expand_underlying=false' + 
+        f'https://api.polygon.io/v1/indicators/rsi/X:BTCUSD' +
+        f'?timespan=hour&window=14&series_type=close&expand_underlying=false' +
         f'&order=desc&limit=700&apiKey={POLYGON_API_KEY}'
     )
     try:
@@ -109,7 +136,7 @@ def get_rsi_data():
     return df
 
 
-def get_ma_data(window, ma_type):
+def get_ma_data(window: str, ma_type: str) -> pd.DataFrame:
     url = (
         f'https://api.polygon.io/v1/indicators/{ma_type}/X:BTCUSD?' +
         f'timespan=hour&window={window}&series_type=close&order=desc&limit=700' +

@@ -1,5 +1,6 @@
 import datetime as dt
 import functools as ft
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd
@@ -8,7 +9,11 @@ import api
 import models
 
 
-def clean_price_data(start, end, currencies):
+def clean_price_data(
+    start: dt.datetime,
+    end: dt.datetime,
+    currencies: List[str]
+) -> pd.DataFrame:
     list_of_dfs = []
     for currency in currencies:
         df = api.get_asset_history(start, end, currency)
@@ -25,7 +30,7 @@ def clean_price_data(start, end, currencies):
     return df_main_graph
 
 
-def clean_ma_data(ma_windows, ma_types):
+def clean_ma_data(ma_windows: List[str], ma_types: List[str]) -> pd.DataFrame:
     dfs_by_window = {}
     for ma_window in ma_windows:
         dfs_by_type = {}
@@ -38,7 +43,7 @@ def clean_ma_data(ma_windows, ma_types):
             .sort_values(by=['timestamp'])
         )
     df_ma50 = dfs_by_window['50']
-    start_datetime = df_ma50["timestamp"].min() 
+    start_datetime = df_ma50["timestamp"].min()
     end_datetime = df_ma50["timestamp"].max()
     if (start_datetime is np.nan) and (end_datetime is np.nan):
         return tuple(dfs_by_window.values())
@@ -59,22 +64,29 @@ def clean_ma_data(ma_windows, ma_types):
         return tuple(dfs_by_window_cleaned.values())
 
 
-def clean_exchange_rates(date, currency_names):
+def clean_exchange_rates(date: dt.date, currency_names: List[str]) -> Dict[str, float]:
     df = models.get_exchange_rates(date)
     if df.empty:
         df = api.get_exchange_rates()
-        record = (
-            df
-            .loc[:, currency_names]
-            .assign(date=date)
-            .to_dict('records')[0]
-        )
-        models.save_exchange_rates(record)
+        if not df.empty:
+            record = (
+                df
+                .astype({'symbol': 'str', 'rateUsd': 'float64'})
+                .loc[lambda x: (x['type'] == 'fiat') & (x['symbol'].isin(currency_names))]
+                .loc[:, ['symbol', 'rateUsd']]
+                .assign(rateUsd=lambda x: 1 / x['rateUsd'])
+                .round({'rateUsd': 4})
+                .set_index('symbol')
+                .T
+                .assign(date=date)
+                .to_dict('records')[0]
+            )
+            models.save_exchange_rates(record)
     rates = df.loc[:, currency_names].to_dict('records')[0]
     return rates
 
 
-def resample_df_fng(df):
+def resample_df_fng(df: pd.DataFrame) -> pd.DataFrame:
     today = df['timestamp'].max()
     selected_dates = [
         today - dt.timedelta(days=day)

@@ -1,3 +1,6 @@
+import datetime as dt
+from typing import Dict
+
 import pandas as pd
 from sqlalchemy import create_engine, Column, Date, String, Integer, Float
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -31,7 +34,7 @@ class ExchangeRates(base):
 base.metadata.create_all(engine)
 
 
-def get_exchange_rates(date):
+def get_exchange_rates(date: dt.date) -> pd.DataFrame:
     query = (
         session
         .query(ExchangeRates)
@@ -43,7 +46,7 @@ def get_exchange_rates(date):
     return df
 
 
-def save_exchange_rates(record):
+def save_exchange_rates(record: Dict[str, float]) -> None:
     obj = ExchangeRates(**record)
     session.add(obj)
     session.commit()
