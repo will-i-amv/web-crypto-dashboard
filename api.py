@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 from dotenv import load_dotenv
+from requests.exceptions import HTTPError, ConnectionError
 
 
 env_file = Path(__file__).resolve().parent / '.env'
@@ -16,15 +17,14 @@ def get_exchange_rates() -> pd.DataFrame:
     url = 'https://api.coincap.io/v2/rates'
     try:
         response = requests.get(url)
-        response_data = response.json()["data"]
-    except:
-        response_data = [{
-            'id': '',
-            'symbol': '',
-            'currencySymbol': '',
-            'type': '',
-            'rateUsd': ''
-        }]
+        response.raise_for_status()
+    except (HTTPError, ConnectionError):
+        df = pd.DataFrame(
+            data=[], 
+            columns=['id', 'symbol', 'currencySymbol', 'type', 'rateUsd']
+        )
+        return df
+    response_data = response.json().get("data")
     df = (
         pd
         .DataFrame(response_data)
@@ -37,13 +37,18 @@ def get_assets() -> pd.DataFrame:
     url = 'http://api.coincap.io/v2/assets?limit=10'
     try:
         response = requests.get(url)
-        response_data = response.json()['data']
-    except:
-        response_data = {
-            'id': [], 'rank': [], 'symbol': [], 'name': [], 'supply': [],
-            'maxSupply': [], 'marketCapUsd': [], 'volumeUsd24Hr': [], 'priceUsd': [],
-            'changePercent24Hr': [], 'vwap24Hr': [], 'explorer': [],
-        }
+        response.raise_for_status()
+    except (HTTPError, ConnectionError):
+        df = pd.DataFrame(
+            data=[], 
+            columns=[
+                'id', 'rank', 'symbol', 'name', 'supply',
+                'maxSupply', 'marketCapUsd', 'volumeUsd24Hr', 'priceUsd',
+                'changePercent24Hr', 'vwap24Hr', 'explorer',
+            ]
+        )
+        return df
+    response_data = response.json().get('data')
     df = (
         pd
         .DataFrame(response_data)
@@ -83,38 +88,44 @@ def get_asset_history(
     )
     try:
         response = requests.get(url)
-        response_data = response.json()['data']
-    except:
-        response_data = {'priceUsd': [], 'time': []}
-    df_cleaned = (
+        response.raise_for_status()
+    except (HTTPError, ConnectionError):
+        df = pd.DataFrame(
+            data=[], 
+            columns=['priceUsd', 'time',],
+        )
+        return df
+    response_data = response.json().get('data')
+    df = (
         pd
         .DataFrame(response_data)
         .loc[:, ['priceUsd', 'time']]
         .astype({'priceUsd': 'float64', 'time': 'datetime64[ms]'})
         .rename(columns={'time': 'timestamp'})
     )
-    return df_cleaned
+    return df
 
 
 def get_fear_greed_data() -> pd.DataFrame:
     url = 'https://api.alternative.me/fng/?limit=365&date_format=us'
     try:
         response = requests.get(url)
-        response_data = response.json()['data']
-    except:
-        response_data = {
-            'value': [],
-            'value_classification': [],
-            'timestamp': [],
-        }
-    df = pd.DataFrame(response_data)
-    df_clean = (
-        df
+        response.raise_for_status()
+    except (HTTPError, ConnectionError):
+        df = pd.DataFrame(
+            data=[], 
+            columns=['value', 'value_classification', 'timestamp',]
+        )
+        return df
+    response_data = response.json().get('data')
+    df = (
+        pd
+        .DataFrame(response_data)
         .loc[:, ['value', 'value_classification', 'timestamp']]
         .astype({'value': 'int64', 'timestamp': 'datetime64[ms]'})
         .sort_values(by=['timestamp'], ascending=False)
     )
-    return df_clean
+    return df
 
 
 def get_rsi_data() -> pd.DataFrame:
@@ -125,9 +136,14 @@ def get_rsi_data() -> pd.DataFrame:
     )
     try:
         response = requests.get(url)
-        response_data = response.json()["results"]["values"]
-    except:
-        response_data = {'timestamp': [], 'value': []}
+        response.raise_for_status()
+    except (HTTPError, ConnectionError):
+        df = pd.DataFrame(
+            data=[], 
+            columns=['timestamp', 'value',]
+        )
+        return df
+    response_data = response.json().get("results").get("values")
     df = (
         pd
         .DataFrame(response_data)
@@ -144,8 +160,17 @@ def get_ma_data(window: str, ma_type: str) -> pd.DataFrame:
     )
     try:
         response = requests.get(url)
-        response_data = response.json()["results"]["values"]
-    except:
-        response_data = {'timestamp': [], 'value': []}
-    df = pd.DataFrame(response_data).astype({'timestamp': 'datetime64[ms]'})
+        response.raise_for_status()
+    except (HTTPError, ConnectionError):
+        df = pd.DataFrame(
+            data=[], 
+            columns=['timestamp', 'value',]
+        )
+        return df
+    response_data = response.json().get("results").get("values")
+    df = (
+        pd
+        .DataFrame(response_data)
+        .astype({'timestamp': 'datetime64[ms]'})
+    )
     return df
