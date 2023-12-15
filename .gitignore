@@ -142,3 +142,4 @@ configuration.cfg
 *.dot
 *.csv
 *.db
+tests/*/cassettes
