@@ -142,4 +142,9 @@ configuration.cfg
 *.dot
 *.csv
 *.db
+
+## OTHER FOLDERS
+
 tests/*/cassettes
+test_suite_analysis/
+managed_context/
